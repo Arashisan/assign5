@@ -62,6 +62,7 @@ void setup () {
     }
     addEnemy(enemyWave);
     f = createFont("Arial",12); // setFont
+    
 }
 
 void draw()
@@ -94,25 +95,26 @@ void draw()
         //Bullet
         shootBullet();
         int [] Num = new int[enemyCount];
-        //int Num;
         for (int i=0; i<shootCount; i++){
-          if(shootX[i] != -1 || shootY[i] != -1){
+          if(shootX[i] != -1 || shootY[i] != -1)
+          {
             Num[i] = closestEnemy(shootX[i],shootY[i]);
             if(Num[i] != -1)
             {
-                if(shootY[i] < enemyY[Num[i]]){
-                  shootY[i]+= 0.5;
+                if(shootY[i] < enemyY[Num[i]])
+                {
+                  shootY[i]+= 1;
                 }
-                else if(enemyY[Num[i]] < shootY[i]){
-                  shootY[i]-= 0.5;
+                else if(enemyY[Num[i]] < shootY[i])
+                {
+                  shootY[i]-= 1;
                 }
-              
             }
           }
         }
         
         //check enemy destory or collide and show flames
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < enemyCount; i++){
             //enemydestory
             checkEnemyDestoried(i);
             //enemy collide
@@ -142,8 +144,11 @@ void draw()
             enemyWave %= 3;
             addEnemy(enemyWave);
         }
+        
         //if enemy all clear
         //resetenemy();
+        
+        //show score
         showScore(score);
         break;
      case GAME_OVER:
@@ -459,21 +464,31 @@ boolean isHit(int ax,int ay,int aw,int ah,int bx,int by,int bw,int bh)
 
 int closestEnemy(int x, int y)
 {
+ int index = -1;
  for (int i = 0; i < enemyCount;i++)
  {
-   if(enemyX[i] != -1 || enemyY[i] != -1){ 
-     
-     if(x > enemyX[i]){
-       distance[i] = dist(x,y,enemyX[i],enemyY[i]);
-       for(int j = i; j < enemyCount-1 ; j++){
-         if(distance[j]<distance[j+1]){
-           return j;
+   if(x > enemyX[i])
+   {
+       if(enemyX[i] != -1 || enemyY[i] != -1)
+       { 
+         distance[i] = dist(x,y,enemyX[i],enemyY[i]);
+         float min = distance[i];
+         index = i;
+         for(int j = i+1; j < enemyCount ; j++)
+         {
+           distance[j] = dist(x,y,enemyX[j],enemyY[j]);
+           if(min>distance[j])
+           {
+             min = distance[j];
+             index = j;
+           }
          }
+         break;
        }
-     }
-     else if(x < enemyX[i])
-       return -1;
-   }
+    }
  }
- return -1;
+  if (index == -1)
+    return -1;
+  else
+    return index;
 }
