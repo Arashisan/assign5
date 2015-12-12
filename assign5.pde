@@ -7,7 +7,8 @@ int gameState = 0;
 int numFrames = 5;
 int enemyCount = 8;
 int shootCount = 5;
-int score = 0;
+int score;
+int enemyScore;
 final int GAME_START=0, GAME_RUN=1, GAME_OVER=2;
 boolean upPressed, downPressed, leftPressed, rightPressed;
 PImage background1, background2, start1, start2, end1, end2;
@@ -60,6 +61,8 @@ void setup () {
       flameX[i] = -1;
       flameY[i] = -1;
     }
+    score = 0;
+    enemyScore = 20;
     addEnemy(enemyWave);
     f = createFont("Arial",12); // setFont
     
@@ -374,7 +377,7 @@ void checkEnemyDestoried(int i) //if bullet hit enemy
         if(enemyX[i] != -1 || enemyY[i] !=-1){
           if(isHit(shootX[j],shootY[j],shoot.width,shoot.height,enemyX[i],enemyY[i],enemy.width,enemy.height)){
             shootX[j] = shootY[j] = -1;
-            score+=20;
+            scoreChange(enemyScore);
             if(flameX[i] == -1 || flameY[i] == -1){
               flameX[i] = enemyX[i];
               flameY[i] = enemyY[i];
@@ -491,4 +494,9 @@ int closestEnemy(int x, int y)
     return -1;
   else
     return index;
+}
+
+void scoreChange(int value)
+{
+  score += value;
 }
